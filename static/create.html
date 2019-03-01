@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label>姓名</label>
+            <input type="text" class="form-control" placeholder="name">
+        </div>
+        <div class="form-group">
+            <label>城市</label>
+            <input type="text" class="form-control" placeholder="city">
+        </div>
+        <div class="form-group">
+            <label>电话</label>
+            <input type="text" class="form-control" placeholder="tel">
+        </div>
+        <div class="form-group">
+            <label>邮箱</label>
+            <input type="text" class="form-control" placeholder="email">
+        </div>
+        <button type="button" class="btn btn-default">Submit</button>
+    </form>
+</div>
+<script>
+	$(function(){
+		var url=window.location.href;
+		var arr=url.split('?');
+		if(arr.length==1){
+			$('button').click(function(){
+				$.ajax({
+					url:'http://127.0.0.1/insert',
+					method:'get',
+					data:{
+						name:$('input').eq(0).val(),
+						city:$('input').eq(1).val(),
+						tel:$('input').eq(2).val(),
+						email:$('input').eq(3).val(),
+
+					},
+					success(d){
+						var data=JSON.parse(d);
+						if(data.ok){
+							alert(data.info);
+							window.location.href='http://127.0.0.1'
+						}else{
+							alert(data.info)
+						}
+					}
+				})
+			})
+		}else{
+			var arr2=arr[1].split('=');
+			var id=arr2[1];
+			$ajax({
+				url:'http://127.0.0.1/find',
+				method:'get',
+				data:{
+					id:id
+				},
+				success(d){
+					var data=JSON.parse(d);
+					if(data.ok){
+						var json=data.data[0];
+						$('input').eq(0).val(json.name);
+                        $('input').eq(1).val(json.city);
+                        $('input').eq(2).val(json.tel);
+                        $('input').eq(3).val(json.email);
+					}else{
+						alert(data.info)
+					}
+				}
+			})
+			$('button').click(function(){
+				$ajax({
+					url:'http://127.0.0.1/update',
+                    method:'get',
+                    data:{
+                        id:id,
+                        name:$('input').eq(0).val(),
+                        city:$('input').eq(1).val(),
+                        tel:$('input').eq(2).val(),
+                        email:$('input').eq(3).val()
+                    },
+                    success(d){
+                    	var data=JSON.parse(d);
+                    	if(data.ok){
+                    		alert(data,info);
+                    		window.location.href='http://127.0.0.1';
+                    	}else{
+                    		alert(data.info);
+                    	}
+                    }
+				})
+			})
+		}
+	})
+</script>
+	
+</body>
+</html>
